@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <title>Task List</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="main-container shadow">
+        <div class="wrapper">
+            <h2 class="title">Task List</h2>
+            <form class="task-input-group" id="task-input-form">
+                <input type="text" class="task-input" maxlength="250" placeholder="Task">
+                    <div class="time-input-group">
+                        <input type="number" class="task-input deadline" placeholder="Deadline" max="999">
+                        <select id="timeUnits" class="form-control" style="width: auto; margin-right: 10px" name="timeUnits">
+                            <option value="min">Minutes</option>
+                            <option value="h">Hours</option>
+                            <option value="d">Days</option>
+                            <option value="w">Weeks</option>
+                            <option value="mn">Months</option>
+                        </select>
+                    </div>
+                <button class="btn btn-primary" type="submit">Add Task</button>
+            </form>
+            <div class="task-input-group">
+                <input type="text" class="task-input" placeholder="Filter Tasks" id="filter">
+                <button class="btn btn-danger" id="clear-tasks">Clear Tasks</button>
+            </div>
+        </div>
+        <div class="grid">
+        </div>
+    </div>
+    
+</body>
+</html>
