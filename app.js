@@ -1,3 +1,5 @@
+//////// ELEMENT QUERIES /////////
+
 const form = document.getElementById('task-input-form');
 const taskList = document.querySelector('.grid');
 const clearTaskBtn = document.querySelector('#clear-tasks');
@@ -6,6 +8,10 @@ const taskInput = document.querySelector('.task-input');
 const timeInput = document.querySelector('.deadline');
 const timeUnitInput = document.querySelector('#timeUnits');
 
+
+//////// HELPER FUNCTIONS /////////
+
+//LOAD ALL EVENT LISTENERS
 loadEventListeners();
 
 function loadEventListeners() {
@@ -21,7 +27,7 @@ function queryAllTasks() {
     return document.querySelectorAll('.card-body')
 }
 
-//CONVERT TIME FOR PROGRESS BAR
+//CONVERT TIME INPUT FROM FORM TO MINUTES
 function timeConvertMinutes(time, unit){
     switch(unit){
         case 'min' :
@@ -42,11 +48,62 @@ function timeConvertMinutes(time, unit){
         }
 }
 
-//UPDATE PROGRESS OF TASK
+//CONVER MILISECONDS TO TIME OBJECT DD:HH:MM:SS
+function convertMs(milliseconds) {
+    let day, hour, minute, seconds;
+    seconds = Math.floor(milliseconds / 1000);
+    minute = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    hour = Math.floor(minute / 60);
+    minute = minute % 60;
+    day = Math.floor(hour / 24);
+    hour = hour % 24;
+    return {
+        day: day,
+        hour: hour,
+        minute: minute,
+        seconds: seconds
+    };
+}
 
+//CHECK FOR DUPLICATES BETWEEN IPUT AND TASKS TASK CONTENT
+function checkForDuplicates(array, checkedInput){
+    for(const item of array){
+        if(item.content === checkedInput.value){
+            return true;
+        }
+    }
+}
+
+
+
+
+//////// FEATURES ON TASKS /////////
+
+//CREATE TASK ELEMENT WITH INPUT
+function createTask(task, index){
+    const {timeAdded, content} = task;
+    //CREATING TASK ELEMENT
+    const taskItem = document.createElement('div');
+    taskItem.className = 'card text-center';
+    taskItem.style.width ='100%';
+    taskItem.innerHTML = `                  
+    <div class="card-body">
+        <h5 class="card-title" style="font-size:1.2rem;">Task nr. ${index}<span class="time-left">${new Date(timeAdded).toDateString()}</span></h5>
+        <p class="card-text">${content}</p>
+        <a href="#" class="btn btn-danger delete">Delete Task</a>
+    </div>
+    <div class="progress-text"></div>
+    <div class="progress-bar">
+        <div class="task-progress"></div>
+    </div>`;
+    return taskItem;
+}
+//CREATE PROGRESS BAR FUNCTION WITH TIME POPUP
 function createProgressBar(task, taskItem){
     const {timeAdded, deadlineTimeInMinutes} = task
-    const taskProgress = taskItem.lastChild.lastChild;
+    const timeLeftElement = taskItem.children[1];
+    const taskProgress = taskItem.lastChild.children[0];
 
     //CALCULATING PROGRESS BAR
     const timeRegistered = new Date(timeAdded);
@@ -58,6 +115,10 @@ function createProgressBar(task, taskItem){
         let timeNow = new Date();
         let processMeter =  Math.floor((timeFinish.getTime() - timeNow.getTime()) / (timeFinish.getTime() - timeRegistered.getTime()) * 100);
         taskProgress.style.width = `${processMeter}%`
+        let timeLeft = convertMs((timeFinish.getTime() - timeNow.getTime()));
+        timeLeftElement.textContent='';
+        let timeLeftString = 
+        timeLeftElement.appendChild(document.createTextNode(`${timeLeft.day} : ${timeLeft.hour} : ${timeLeft.minute} : ${timeLeft.seconds}`))
 
     //STYLING THE PROCESSBAR / CLEARING INTERVAL
         if (processMeter < 75){
@@ -77,31 +138,11 @@ function createProgressBar(task, taskItem){
     }, 500);
 
 }
-//CREATE TASK ELEMENT WITH INPUT
-function createTask(task, index){
-    const {timeAdded, content} = task;
-    //CREATING TASK ELEMENT
-    const taskItem = document.createElement('div');
-    taskItem.className = 'card text-center';
-    taskItem.style.width ='100%';
-    taskItem.innerHTML = `                  
-    <div class="card-body">
-        <h5 class="card-title" style="font-size:1.2rem;">Task nr. ${index}<span class="time-left">${new Date(timeAdded).toDateString()}</span></h5>
-        <p class="card-text">${content}</p>
-        <a href="#" class="btn btn-danger delete">Delete Task</a>
-    </div>
-    <div class="progress-bar"><div class="task-progress"></div></div>`;
-    return taskItem;
-}
 
-//CHECK FOR DUPLICATES BETWEEN IPUT AND TASKS TASK CONTENT
-function checkForDuplicates(array, checkedInput){
-    for(const item of array){
-        if(item.content === checkedInput.value){
-            return true;
-        }
-    }
-}
+
+
+//////// OPERATIONS ON TASKS /////////
+
 // ADD TASK AND REFRESH COUNT
 function addTask(e) {
     let tasks = loadTasksFromMemory();
