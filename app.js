@@ -116,10 +116,12 @@ function createProgressBar(task, taskItem){
         let processMeter =  Math.floor((timeFinish.getTime() - timeNow.getTime()) / (timeFinish.getTime() - timeRegistered.getTime()) * 100);
         taskProgress.style.width = `${processMeter}%`
         let timeLeft = convertMs((timeFinish.getTime() - timeNow.getTime()));
+        if((timeFinish.getTime() - timeNow.getTime()) > 0){
         timeLeftElement.textContent='';
-        let timeLeftString = 
         timeLeftElement.appendChild(document.createTextNode(`${timeLeft.day} : ${timeLeft.hour} : ${timeLeft.minute} : ${timeLeft.seconds}`))
-
+        }else{
+        timeLeftElement.textContent = 'Time is up';
+        }
     //STYLING THE PROCESSBAR / CLEARING INTERVAL
         if (processMeter < 75){
             taskProgress.style.backgroundColor =  'rgb(154, 194, 62)';
